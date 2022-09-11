@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  
+  <body>
+    <h1>PetPal</h1> 
+    <h3>Chat with PetPal for a pet recommendation :)</h3> 
+    
+    <img src="{{ url_for('static', filename='CatDog.png') }}" alt="Robot cartoon" height="500vh">
+    
+    <div>
+      <div id="chatbox">
+        <p class="botText"><span> <img src="{{ url_for('static', filename='pup.png') }}" width="40" height="40"> 
+        Hi! I'm PetBot.</span></p>
+      </div>
+    
+      
+      <div id="userInput">
+        
+        <img src="{{ url_for('static', filename='avatar.png') }}" width="40" height="40">
+        <input id="textInput" type="text" size=50 name="msg" placeholder="Message">
+        <input id="buttonInput" type="submit" value="Send">
+      </div>
+     
+
+      
+      <!--Input-->
+      <script>
+        function getBotResponse() {
+          var rawText = $("#textInput").val();
+          var userHtml = '<p class="userText"' 
+              userHtml += '<span>'
+              userHtml += "<img src=\"{{ url_for('static', filename='Avatar.png') }}\" width=\"40\" height=\"40\">" 
+              userHtml += rawText + '</span></p>';
+          $("#textInput").val("");
+          $("#chatbox").append(userHtml);
+          document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          $.get("/get", { msg: rawText }).done(function(data) {
+            //var botHtml = '<p class="botText"><span>' + data + '</span></p>';
+            var pupImg = "<img src=\"{{ url_for('static', filename='pup.png') }}\" width=\"40\" height=\"40\">" 
+            var botHtml = '<p class="botText">'
+              botHtml += '<span>' + pupImg +  data + '</span></p>';
+            console.log(botHtml);
+            $("#chatbox").append(botHtml);
+            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          });
+        }
+        $("#textInput").keypress(function(e) {
+            if ((e.which == 13) && document.getElementById("textInput").value != "" ){
+                getBotResponse();
+            }
+        });
+        $("#buttonInput").click(function() {
+            if (document.getElementById("textInput").value != "") {
+                getBotResponse();
+            }
+        })
+      </script>
+    </div>
+  </body>
+</html>
